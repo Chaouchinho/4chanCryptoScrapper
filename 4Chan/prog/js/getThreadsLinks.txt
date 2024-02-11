@@ -1,0 +1,23 @@
+function getData()
+{
+	temp = "[";
+	data = document.getElementById('threads').getElementsByClassName('thread')
+	for(i=0;i<data.length;i++)
+	{
+		try {
+			titre = document.getElementById('threads').getElementsByClassName('thread')[i].getElementsByClassName('teaser')[0].getElementsByTagName('b')[0].innerText.replaceAll('"',"-").replaceAll(',',"-")
+			contenu = document.getElementById('threads').getElementsByClassName('thread')[i].getElementsByClassName('teaser')[0].innerText.replace(titre,"").replaceAll('"',"-").replaceAll(',',"-")
+		}
+		catch {
+			titre = document.getElementById('threads').getElementsByClassName('thread')[i].getElementsByClassName('teaser')[0].innerText.replaceAll('"',"-").replaceAll(',',"-")
+			contenu=""
+		}
+		
+		nb_reponse = parseInt(document.getElementById('threads').getElementsByClassName('thread')[i].getElementsByTagName('div')[0].innerText.split("/")[0].trim().replaceAll("R: ",""))
+		temp=temp+'{'+     '"titre":"' +  titre   +'",'+   '"total":"'+  nb_reponse  +'",'+    '"contenu":"' + contenu  + '"},';
+	}
+	temp = temp + "]"
+	temp = temp.replaceAll("},]","}]").replaceAll("NaN","0")
+	return temp
+}
+return getData()

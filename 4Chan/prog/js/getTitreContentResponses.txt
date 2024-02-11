@@ -1,0 +1,42 @@
+function getResponses(theUrl)
+{
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.overrideMimeType('application/xml')
+    xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
+    xmlHttp.send(null);
+    var htmlObject = document.createElement('div');
+    htmlObject.innerHTML = xmlHttp.responseText;
+    tempChar = "";
+    for(j=0;j<htmlObject.getElementsByTagName("blockquote").length;j++)
+	{
+		htmlObject.getElementsByTagName("blockquote")[j].innerHTML = htmlObject.getElementsByTagName("blockquote")[j].innerHTML.replaceAll("<br>"," ")
+        tempChar = tempChar + " " + htmlObject.getElementsByTagName("blockquote")[j].innerText.replaceAll('"',"-").replaceAll(',',"-").replaceAll('<'," ").replaceAll('>'," ").toLowerCase()
+    }
+    return tempChar
+}
+
+function getData()
+{
+	temp = "[";
+	data = document.getElementById('threads').getElementsByClassName('thread')
+	for(i=0;i<data.length;i++)
+	{
+		try {
+			titre = document.getElementById('threads').getElementsByClassName('thread')[i].getElementsByClassName('teaser')[0].getElementsByTagName('b')[0].innerText.replaceAll('"',"-").replaceAll(',',"-")
+			contenu = document.getElementById('threads').getElementsByClassName('thread')[i].getElementsByClassName('teaser')[0].innerText.replace(titre,"").replaceAll('"',"-").replaceAll(',',"-")
+			allrep = getResponses(document.getElementById('threads').getElementsByClassName('thread')[i].id.replace("thread-", "https://boards.4channel.org/biz/thread/"))
+		}
+		catch {
+			titre = document.getElementById('threads').getElementsByClassName('thread')[i].getElementsByClassName('teaser')[0].innerText.replaceAll('"',"-").replaceAll(',',"-")
+			contenu=""
+			allrep=""
+		}
+		
+		nb_reponse = parseInt(document.getElementById('threads').getElementsByClassName('thread')[i].getElementsByTagName('div')[0].innerText.split("/")[0].trim().replaceAll("R: ",""))
+		temp=temp+'{'+     '"titre":"' +  titre   +'",'+   '"total":"'+  nb_reponse  +'",'+   '"allrep":"'+  allrep  +'",'+    '"contenu":"' + contenu  + '"},';
+	}
+	temp = temp + "]"
+	temp = temp.replaceAll("},]","}]").replaceAll("NaN","0")
+	return temp
+}
+return getData()
